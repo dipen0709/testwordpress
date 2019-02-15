@@ -75,13 +75,14 @@ function timer() {
         if (sec < 10) {
             sec = "0" + sec;
         }
-             
+        var html = "<h1>"+ hr + ":" + min + ":" + sec + ":" + mSec +"</h1>";
+        $(html).appendAfter("#editor");         
         timer();
     }, 10);
 }
     </script>'; 
-//    $("<h1>"+ hr + ":" + min + ":" + sec + ":" + mSec +"</h1>").insertAfter("#editor"); 
-//    document.getElementById("editor").innerHTML = "<h1>"+ hr + ":" + min + ":" + sec + ":" + mSec +"</h1>";
+    
+//    document.getElementById("test").innerHTML = "<h1>"+ hr + ":" + min + ":" + sec + ":" + mSec +"</h1>";
 //    jQuery("#editor").appendhr + ":" + min + ":" + sec + ":" + mSec;
     //        document.getElementById("editor").innerHTML = hr + ":" + min + ":" + sec + ":" + mSec;
     return $html;
@@ -89,7 +90,7 @@ function timer() {
 
 function theme_slug_filter_the_content( $content ) {    
         $html = gethtml();
-        $custom_content = '';
+        $custom_content = 'YOUR CONTENT GOES HERE: ';
         $custom_content .= $html;
         echo $custom_content;       
 }
