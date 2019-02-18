@@ -10,95 +10,70 @@
   Text Domain: countdown-addweb
  */
 
-//class countdownaddweb_main {
-//
-//    function __construct() {
-//
-//        require_once(plugin_dir_path(__FILE__) . 'includes/countdownaddweb-script.php');
-//        
-//        require_once (plugin_dir_path(__FILE__) . 'admin/class.settings-api.php');
-//        require_once (plugin_dir_path(__FILE__) . 'admin/settings.php');
-//        new WeDevs_Settings_API_Test();
-//    }
-//}
-//
-//$countdownaddweb_main = new countdownaddweb_main();
+// table generating code
+function custom_plugin_tables() {
+    global $wpdb;
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
+    if (count($wpdb->get_var('SHOW TABLES LIKE "wp_timer"')) == 0) {
 
-    //echo plugin_dir_path(__FILE__) . 'admin/settings.php'; die;
+        $sql_query_to_create_table = "CREATE TABLE `wp_timer` (
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `post_id` int(11) DEFAULT NULL,
+            `time_spent` varchar(255) CHARACTER SET armscii8 COLLATE armscii8_bin DEFAULT NULL,
+            `user_id` int(11) DEFAULT NULL,
+            `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (`id`)
+           ) ENGINE=InnoDB DEFAULT CHARSET=latin1"; /// sql query to create table
 
-require_once (plugin_dir_path(__FILE__) . 'admin/class.settings-api.php');
-require_once (plugin_dir_path(__FILE__) . 'admin/settings.php');
-
-//$settings = get_settings();
-//print'<pre>';
-//print_r($settings);
-
-$a = get_option( 'wedevs_basics' );
-//print'<pre>';
-//print_r($a);
-// find the value you want to un-serialize, then, put as below
-
-//$arr = $a;
-//
-//$profile_arr = unserialize($a);
-//
-//print_r($profile_arr);
-//die;
-
-//die;
-
-function gethtml(){
-    $html='';  
-    $html.='
-    <script>
-var status = 0;
-var time = 0;
-timer();
-
-function timer() {
-    setTimeout(function () {
-        time++;
-        var hr = Math.floor(time / 100 / 60 / 60);
-        var min = Math.floor(time / 100 / 60);
-        var sec = Math.floor(time / 100);
-        var mSec = time % 100;
-        if (hr < 10) {
-            hr = "0" + hr;
-        }
-        if (min < 10) {
-            min = "0" + min;
-        }
-        if (sec >= 60) {
-            sec = sec % 60;
-        }
-        if (sec < 10) {
-            sec = "0" + sec;
-        }
-        var html = "<h1>"+ hr + ":" + min + ":" + sec + ":" + mSec +"</h1>";
-        $(html).appendAfter("#editor");         
-        timer();
-    }, 10);
-}
-    </script>'; 
-    
-//    document.getElementById("test").innerHTML = "<h1>"+ hr + ":" + min + ":" + sec + ":" + mSec +"</h1>";
-//    jQuery("#editor").appendhr + ":" + min + ":" + sec + ":" + mSec;
-    //        document.getElementById("editor").innerHTML = hr + ":" + min + ":" + sec + ":" + mSec;
-    return $html;
+        dbDelta($sql_query_to_create_table);
+    }
 }
 
-function theme_slug_filter_the_content( $content ) {    
-        $html = gethtml();
-        $custom_content = 'YOUR CONTENT GOES HERE: ';
-        $custom_content .= $html;
-        echo $custom_content;       
+register_activation_hook(__FILE__, 'custom_plugin_tables');
+
+function deactivate_table() {
+
+    global $wpdb;
+    $wpdb->query("DROP table IF Exists wp_timer");
 }
-//add_filter( 'in_admin_footer', 'theme_slug_filter_the_content' );
-//add_action( 'in_admin_footer', 'theme_slug_filter_the_content' );
-//add_action( 'admin_head-post.php', 'theme_slug_filter_the_content' );
-add_action('admin_head-post-new.php',  'theme_slug_filter_the_content' );
-//add_action( 'admin_head-edit.php', 'theme_slug_filter_the_content' );
 
+register_deactivation_hook(__FILE__, "deactivate_table");
 
-new WeDevs_Settings_API_Test();
+class countdownaddweb_main {
+
+    function __construct() {
+        require_once (plugin_dir_path(__FILE__) . 'admin/class.settings-api.php');
+        require_once (plugin_dir_path(__FILE__) . 'admin/settings.php');
+        new WeDevs_Settings_API_Test();
+        $this->callactions();
+//        $this->custom_plugin_tables();
+//        register_activation_hook(__FILE__, 'custom_plugin_tables');
+//        register_deactivation_hook(__FILE__,"deactivate_table");
+    }
+
+    function gethtml() {
+        $a = get_option('wedevs_basics');
+
+        if (get_post_type() == 'post') {
+            if (array_key_exists("post", $a['multicheck'])) {
+                require_once (plugin_dir_path(__FILE__) . 'includes/timer.php');
+            }
+        } else if (get_post_type() == 'page') {
+            if (array_key_exists("page", $a['multicheck'])) {
+                require_once (plugin_dir_path(__FILE__) . 'includes/timer.php');
+            }
+        } else {
+            echo '';
+        }
+    }
+
+    function callactions() {
+
+        add_action('admin_head-post-new.php', array($this, 'gethtml'));
+        add_action('admin_head-post.php', array($this, 'gethtml'));
+    }
+
+}
+
+new countdownaddweb_main();

@@ -78,11 +78,10 @@ class WeDevs_Settings_API_Test {
                     'label'   => __( 'Multile checkbox', 'wedevs' ),
                     'desc'    => __( 'Multi checkbox description', 'wedevs' ),
                     'type'    => 'multicheck',
-//                    'default' => array('one' => 'one', 'four' => 'four'),
                     'default' => '',
                     'options' => array(
-                        'posts'   => 'All Posts',
-                        'pages'   => 'All Pages',                        
+                        'post'   => 'All Posts',
+                        'page'   => 'All Pages',                        
                     )
                 ),            
             )
