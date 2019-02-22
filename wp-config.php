@@ -79,6 +79,8 @@ $table_prefix  = 'wp_';
  */
 define('WP_DEBUG', TRUE);
 define('FS_METHOD', 'direct');
+
+define( 'AUTOSAVE_INTERVAL', 3600 );
 /* That's all, stop editing! Happy blogging. */
 
 /** Absolute path to the WordPress directory. */

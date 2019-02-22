@@ -47,12 +47,7 @@ class WeDevs_Settings_API_Test {
     function get_settings_fields() {
         $settings_fields = array(
             'wedevs_basics' => array(
-                
-                array(
-                    'name'        => 'html',
-                    'desc'        => __( '<strong><a href="">ClickHere</a></strong> To generate the countdown timer report and download it.', 'wedevs' ),
-                    'type'        => 'html'
-                ),                
+                             
                 array(
                     'name'    => 'position',
                     'label'   => __( 'A Dropdown', 'wedevs' ),
@@ -83,7 +78,12 @@ class WeDevs_Settings_API_Test {
                         'post'   => 'All Posts',
                         'page'   => 'All Pages',                        
                     )
-                ),            
+                ),                    
+                array(
+                    'name'        => 'html',
+                    'desc'        => __( '<strong><form method="post" id="download_form" action=""><input type="submit" name="download_csv" class="button-primary" value="ClickHere" /></form></strong> To generate the countdown timer report.', 'wedevs' ),
+                    'type'        => 'html'
+                ),   
             )
         );
 
